@@ -36,5 +36,6 @@
         <module>repair-service</module>
         <module>report-service</module>
         <module>vendor-service</module>
+        <module>student-service</module>
     </modules>
 </project>
