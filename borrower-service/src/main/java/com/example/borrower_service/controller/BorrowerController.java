@@ -23,20 +23,20 @@ public class BorrowerController {
     public String listBorrowers(Model model) {
         List<BorrowerResponse> borrowers = borrowerService.getAllActiveBorrowers();
         model.addAttribute("borrowers", borrowers);
-        return "borrower/list";  // templates/borrower/list.html
+        return "list";  // templates/borrower/list.html
     }
 
     @GetMapping("/new")
     public String showAddForm(Model model) {
         model.addAttribute("borrower", new BorrowerRequest());
-        return "borrower/form";  // templates/borrower/form.html
+        return "form";
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public String addBorrower(@Valid @ModelAttribute("borrower") BorrowerRequest borrowerRequest,
                               BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "borrower/form";
+            return "form";
         }
         borrowerService.createBorrower(borrowerRequest);
         return "redirect:/borrowers";
@@ -48,13 +48,12 @@ public class BorrowerController {
         BorrowerRequest request = new BorrowerRequest();
         request.setBorrowerLastName(borrower.getBorrowerLastName());
         request.setBorrowerFirstName(borrower.getBorrowerFirstName());
-        request.setBorrowerName(borrower.getBorrowerName());
         request.setBorrowerEmail(borrower.getBorrowerEmail());
         request.setBorrowerContactNumber(borrower.getBorrowerContactNumber());
         request.setBorrowerAddress(borrower.getBorrowerAddress());
         model.addAttribute("borrower", request);
         model.addAttribute("borrowerId", id);
-        return "borrower/edit-form";  // templates/borrower/edit-form.html
+        return "edit-form";
     }
 
     @PostMapping("/update/{id}")
@@ -62,7 +61,7 @@ public class BorrowerController {
                                  @Valid @ModelAttribute("borrower") BorrowerRequest request,
                                  BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "borrower/edit-form";
+            return "edit-form";
         }
         borrowerService.updateBorrower(request, id);
         return "redirect:/borrowers";

@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BorrowerServiceImpl implements BorrowerService {
-
     private final BorrowerRepository borrowerRepository;
     private final BorrowerMapper borrowerMapper;
 

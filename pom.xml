@@ -26,15 +26,5 @@
         <module>report-service</module>
         <module>admin-portal-service</module>
         <module>product-service</module>
-        <module>api-gateway</module>
-        <module>auth-service</module>
-        <module>borrower-service</module>
-        <module>category-service</module>
-        <module>eureka-server</module>
-        <module>loan-service</module>
-        <module>product-service</module>
-        <module>repair-service</module>
-        <module>report-service</module>
-        <module>vendor-service</module>
     </modules>
 </project>

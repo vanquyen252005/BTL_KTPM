@@ -10,13 +10,11 @@ public class BorrowerRequest {
     private String borrowerLastName;
     @NotBlank(message = "Ho va ten khong duoc de trong")
     private String borrowerFirstName;
-    @NotBlank(message = "Ho va ten khong duoc de trong")
-    private String borrowerName;
     @Email(message = "Email khong hop le")
     @NotBlank(message = "Email khong duoc de trong")
     private String borrowerEmail;
     private String borrowerContactNumber;
     private String borrowerAddress;
-    private String createdBorrower;
-    private String lastModifiedBorrower;
+    private String createdBorrower;// server tu quan ly
+    private String lastModifiedBorrower;// server tu quan ly
 }

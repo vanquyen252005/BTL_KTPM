@@ -22,8 +22,6 @@ public class Borrower {
     private String borrowerLastName;
     @Column(nullable = false)
     private String borrowerFirstName;
-    @Column(nullable = false)
-    private String borrowerName;
     @Column(unique = true,nullable = false)
     private String borrowerEmail;
     private String borrowerContactNumber;
