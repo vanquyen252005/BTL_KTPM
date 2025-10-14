@@ -7,7 +7,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>borrower-service</artifactId>
-    <name>Archetype - borrower-service</name>
+    <name>borrower-service</name>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
