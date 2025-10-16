@@ -22,9 +22,11 @@
         <module>category-service</module>
         <module>loan-service</module>
         <module>borrower-service</module>
-        <module>repair-service</module>
         <module>report-service</module>
         <module>admin-portal-service</module>
         <module>product-service</module>
+        <module>staff-portal-service</module>
+        <module>customer-portal-service</module>
+        <module>staff-service</module>
     </modules>
 </project>
