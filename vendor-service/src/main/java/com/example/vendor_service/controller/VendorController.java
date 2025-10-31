@@ -5,9 +5,8 @@ import com.example.vendor_service.dto.VendorResponse;
 import com.example.vendor_service.service.VendorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,57 +18,39 @@ public class VendorController {
 
     private final VendorService vendorService;
 
+    // ✅ GET all vendors
     @GetMapping
-    public String listVendors(Model model) {
+    public ResponseEntity<List<VendorResponse>> getAllVendors() {
         List<VendorResponse> vendors = vendorService.getAllActiveVendors();
-        model.addAttribute("vendors", vendors);
-        return "vendor/list"; // templates/vendor/list.html
+        return ResponseEntity.ok(vendors);
     }
 
-    @GetMapping("/new")
-    public String showAddForm(Model model) {
-        model.addAttribute("vendor", new VendorRequest());
-        return "vendor/form";
-    }
-
-    @PostMapping
-    public String addVendor(@Valid @ModelAttribute("vendor") VendorRequest vendorRequest,
-                            BindingResult result) {
-        if (result.hasErrors()) {
-            return "vendor/form";
-        }
-        vendorService.createVendor(vendorRequest);
-        return "redirect:/vendors";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    // ✅ GET vendor by id
+    @GetMapping("/{id}")
+    public ResponseEntity<VendorResponse> getVendorById(@PathVariable Long id) {
         VendorResponse vendor = vendorService.getVendor(id);
-        VendorRequest request = new VendorRequest();
-        request.setVendorName(vendor.getVendorName());
-        request.setVendorContactNumber(vendor.getVendorContactNumber());
-        request.setVendorCompany(vendor.getVendorCompany());
-        request.setCreatedVendor(vendor.getCreatedVendor());
-        request.setLastModifiedVendor(vendor.getLastModifiedVendor());
-        model.addAttribute("vendor", request);
-        model.addAttribute("vendorId", id);
-        return "vendor/edit-form";
+        return ResponseEntity.ok(vendor);
     }
 
-    @PostMapping("/update/{id}")
-    public String updateVendor(@PathVariable Long id,
-                               @Valid @ModelAttribute("vendor") VendorRequest request,
-                               BindingResult result) {
-        if (result.hasErrors()) {
-            return "vendor/edit-form";
-        }
-        vendorService.updateVendor(request, id);
-        return "redirect:/vendors";
+    // ✅ POST create new vendor
+    @PostMapping
+    public ResponseEntity<VendorResponse> createVendor(@Valid @RequestBody VendorRequest vendorRequest) {
+        VendorResponse created = vendorService.createVendor(vendorRequest);
+        return ResponseEntity.ok(created);
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteVendor(@PathVariable Long id) {
+    // ✅ PUT update vendor
+    @PutMapping("/{id}")
+    public ResponseEntity<VendorResponse> updateVendor(@PathVariable Long id,
+                                                       @Valid @RequestBody VendorRequest vendorRequest) {
+        VendorResponse updated = vendorService.updateVendor(vendorRequest, id);
+        return ResponseEntity.ok(updated);
+    }
+
+    // ✅ DELETE vendor (soft delete hoặc hard delete tuỳ service)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteVendor(@PathVariable Long id) {
         vendorService.deleteVendor(id);
-        return "redirect:/vendors";
+        return ResponseEntity.ok("Vendor deleted successfully");
     }
 }
