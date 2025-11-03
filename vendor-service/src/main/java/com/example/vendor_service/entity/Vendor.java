@@ -23,7 +23,6 @@ public class Vendor {
     private String vendorContactNumber;
     private String vendorCompany;
     private String createdVendor;
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDate lastModifiedDateTime;
     private String lastModifiedVendor;
     @Column(nullable = false)
