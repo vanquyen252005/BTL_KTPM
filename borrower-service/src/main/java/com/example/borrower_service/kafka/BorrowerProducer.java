@@ -1,6 +1,6 @@
 package com.example.borrower_service.kafka;
 
-import com.example.borrower_service.dto.BorrowerEvent;
+import com.example.base_domains.dto.BorrowerEvent;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

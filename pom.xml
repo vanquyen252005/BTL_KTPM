@@ -28,5 +28,6 @@
         <module>staff-portal-service</module>
         <module>customer-portal-service</module>
         <module>staff-service</module>
+        <module>base-domains</module>
     </modules>
 </project>

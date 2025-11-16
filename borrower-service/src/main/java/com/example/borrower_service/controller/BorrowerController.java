@@ -1,7 +1,7 @@
 package com.example.borrower_service.controller;
 
-import com.example.borrower_service.dto.BorrowRequest;
-import com.example.borrower_service.dto.BorrowerEvent;
+import com.example.base_domains.dto.BorrowRequest;
+import com.example.base_domains.dto.BorrowerEvent;
 import com.example.borrower_service.dto.BorrowerRequest;
 import com.example.borrower_service.dto.BorrowerResponse;
 import com.example.borrower_service.entity.Borrower;
@@ -27,10 +27,10 @@ public class BorrowerController {
     private final BorrowerService borrowerService;
     private BorrowerProducer borrowerProducer;
 
-    public BorrowerController(BorrowerService borrowerService, BorrowerProducer borrowerProducer) {
-        this.borrowerService = borrowerService;
-        this.borrowerProducer = borrowerProducer;
-    }
+//    public BorrowerController(BorrowerService borrowerService, BorrowerProducer borrowerProducer) {
+//        this.borrowerService = borrowerService;
+//        this.borrowerProducer = borrowerProducer;
+//    }
 
     @GetMapping
     public String listBorrowers(Model model) {
@@ -89,14 +89,13 @@ public class BorrowerController {
     @PostMapping("/kafka")
     public String placeBorrower(@RequestBody BorrowRequest request){
 
-        Borrower borrower = request.getBorrower();
-        Product product = request.getProduct();
+        String borrower = request.getBorrowerID();
+        String product = request.getProductID();
         int quantity = request.getQuantity();
 
-        borrower.setBorrowerId(Math.abs(UUID.randomUUID().getMostSignificantBits()));
         BorrowerEvent borrowerEvent = new BorrowerEvent();
-        borrowerEvent.setBorrower(borrower);
-        borrowerEvent.setProduct(product);
+        borrowerEvent.setBorrowerID(borrower);
+        borrowerEvent.setProductID(product);
         borrowerEvent.setQuantity(quantity);
         borrowerEvent.setMessage("borrower is sending event");
 
