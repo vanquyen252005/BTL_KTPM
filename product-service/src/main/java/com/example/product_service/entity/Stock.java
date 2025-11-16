@@ -1,15 +1,24 @@
 package com.example.product_service.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Entity
+@Table(name = "stock")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Stock {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long stockId;
 
     @CreatedDate
@@ -27,8 +36,10 @@ public class Stock {
     private int quantity;
 
     private BigDecimal version;
+
     private Long vendorId;
+
     @ManyToOne
-    @JoinColumn(name="productId")
+    @JoinColumn(name = "productId", nullable = false)
     private Product product;
 }
