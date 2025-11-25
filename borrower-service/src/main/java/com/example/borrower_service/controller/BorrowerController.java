@@ -25,7 +25,7 @@ import java.util.UUID;
 public class BorrowerController {
 
     private final BorrowerService borrowerService;
-    private BorrowerProducer borrowerProducer;
+    private final BorrowerProducer borrowerProducer;
 
 //    public BorrowerController(BorrowerService borrowerService, BorrowerProducer borrowerProducer) {
 //        this.borrowerService = borrowerService;
