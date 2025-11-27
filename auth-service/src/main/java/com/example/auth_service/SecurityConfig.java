@@ -18,7 +18,7 @@ public class SecurityConfig {
                         .requestMatchers("/dashboard/admin/**").hasRole("ADMIN")
                         .requestMatchers("/dashboard/staff/**").hasRole("STAFF")
                         .requestMatchers("/dashboard/customer/**").hasRole("CUSTOMER")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/login/success", true)
