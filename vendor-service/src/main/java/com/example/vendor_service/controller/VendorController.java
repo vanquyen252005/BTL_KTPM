@@ -18,28 +18,24 @@ public class VendorController {
 
     private final VendorService vendorService;
 
-    // ✅ GET all vendors
     @GetMapping
     public ResponseEntity<List<VendorResponse>> getAllVendors() {
         List<VendorResponse> vendors = vendorService.getAllActiveVendors();
         return ResponseEntity.ok(vendors);
     }
 
-    // ✅ GET vendor by id
     @GetMapping("/{id}")
     public ResponseEntity<VendorResponse> getVendorById(@PathVariable Long id) {
         VendorResponse vendor = vendorService.getVendor(id);
         return ResponseEntity.ok(vendor);
     }
 
-    // ✅ POST create new vendor
     @PostMapping
     public ResponseEntity<VendorResponse> createVendor(@Valid @RequestBody VendorRequest vendorRequest) {
         VendorResponse created = vendorService.createVendor(vendorRequest);
         return ResponseEntity.ok(created);
     }
 
-    // ✅ PUT update vendor
     @PutMapping("/{id}")
     public ResponseEntity<VendorResponse> updateVendor(@PathVariable Long id,
                                                        @Valid @RequestBody VendorRequest vendorRequest) {
@@ -47,7 +43,6 @@ public class VendorController {
         return ResponseEntity.ok(updated);
     }
 
-    // ✅ DELETE vendor (soft delete hoặc hard delete tuỳ service)
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteVendor(@PathVariable Long id) {
         vendorService.deleteVendor(id);

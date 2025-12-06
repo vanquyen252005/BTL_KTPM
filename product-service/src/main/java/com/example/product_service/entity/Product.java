@@ -16,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "product")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
