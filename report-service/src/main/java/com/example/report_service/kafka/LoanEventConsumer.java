@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ReportConsumer {
+public class LoanEventConsumer {
 
     private final ReportRepository reportRepository;
 

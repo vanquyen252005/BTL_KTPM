@@ -56,6 +56,6 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Stock> stocks;
 
-    private boolean isActive;
+    private Boolean active = true;
 
 }

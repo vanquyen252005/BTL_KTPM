@@ -2,9 +2,10 @@ package com.example.report_service.service.impl;
 
 import com.example.report_service.entity.Report;
 import com.example.report_service.repository.ReportRepository;
-import com.example.report_service.service.ReportService;
+import com.example.report_service.service.ReportQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,7 +13,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ReportServiceImpl implements ReportService {
+@Transactional(readOnly = true)
+public class ReportQueryServiceImpl implements ReportQueryService {
 
     private final ReportRepository reportRepository;
 
