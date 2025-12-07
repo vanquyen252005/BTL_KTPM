@@ -10,7 +10,7 @@ public class LoanResponse {
     private Long loanId;
     private String loanNumber;
     private Long borrowerId;
-    private BigDecimal amount;
+    private BigDecimal loanAmount;
     private BigDecimal interestRate;
     private Integer durationMonths;
     private String loanStatus;

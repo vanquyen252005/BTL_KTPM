@@ -26,13 +26,17 @@ public class BorrowerProducer {
     }
 
     public void sendMessage(BorrowerEvent event){
-        LOGGER.info(String.format("Order event => %s", event.toString()));
+        LOGGER.info(String.format("Order event => %s", event.toString()) + "- EVENT_SENT_AT=" + System.currentTimeMillis());
 
         //create Message
         Message<BorrowerEvent> message = MessageBuilder
                 .withPayload(event)
                 .setHeader(KafkaHeaders.TOPIC, topic.name())
                 .build();
+
+        //System.out.println("EVENT_SENT_AT=" + System.currentTimeMillis());
+        //LOGGER.info("EVENT_SENT_AT=" + System.currentTimeMillis());
+
         kafkaTemplate.send(message);
     }
 }

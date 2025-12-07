@@ -14,6 +14,7 @@ public interface LoanMapper {
     @Mapping(target = "loanStatus", ignore = true)
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "disbursementDate", ignore = true)
+    //@Mapping(source = "loanAmount", target = "loanAmount")
     Loan toEntity(LoanRequest request);
 
     LoanResponse toResponse(Loan loan);

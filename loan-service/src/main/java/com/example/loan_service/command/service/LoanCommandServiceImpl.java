@@ -1,4 +1,4 @@
-package com.example.loan_service.service.impl;
+package com.example.loan_service.command.service;
 
 import com.example.loan_service.dto.LoanRequest;
 import com.example.loan_service.dto.LoanResponse;
@@ -6,24 +6,21 @@ import com.example.loan_service.entity.Loan;
 import com.example.loan_service.exception.LoanNotFoundException;
 import com.example.loan_service.map.LoanMapper;
 import com.example.loan_service.repository.LoanRepository;
-import com.example.loan_service.service.LoanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class LoanServiceImpl implements LoanService {
+public class LoanCommandServiceImpl implements LoanCommandService {
 
     private final LoanRepository loanRepository;
     private final LoanMapper loanMapper;
-    // private final LoanProducer loanProducer; // Uncomment khi bạn đã tạo Kafka Producer
+    // private final LoanProducer loanProducer;
 
     @Override
     public LoanResponse createLoan(LoanRequest request) {
@@ -35,22 +32,8 @@ public class LoanServiceImpl implements LoanService {
 
         Loan savedLoan = loanRepository.save(loan);
 
-        // Có thể bắn Kafka event "LOAN_CREATED" ở đây nếu cần
+        //publish event LOAN_CREATED nếu cần
         return loanMapper.toResponse(savedLoan);
-    }
-
-    @Override
-    public LoanResponse getLoanById(Long id) {
-        Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new LoanNotFoundException("Loan not found with id: " + id));
-        return loanMapper.toResponse(loan);
-    }
-
-    @Override
-    public List<LoanResponse> getAllLoans() {
-        return loanRepository.findAll().stream()
-                .map(loanMapper::toResponse)
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -58,13 +41,15 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new LoanNotFoundException("Loan not found"));
 
-        //Chỉ được duyệt khi đang PENDING
-        if (loan.getLoanStatus() != "PENDING") {
-            throw new RuntimeException("Loan is not in PENDING state");
+        if (!"PENDING".equals(loan.getLoanStatus())) {
+            throw new IllegalStateException("Loan is not in PENDING state");
         }
 
         loan.setLoanStatus("APPROVED");
-        return loanMapper.toResponse(loanRepository.save(loan));
+        Loan saved = loanRepository.save(loan);
+
+        // publish event LOAN_APPROVED nếu cần
+        return loanMapper.toResponse(saved);
     }
 
     @Override
@@ -72,9 +57,8 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new LoanNotFoundException("Loan not found"));
 
-        //Chỉ giải ngân khi đã APPROVED
-        if (loan.getLoanStatus() != "APPROVED") {
-            throw new RuntimeException("Loan must be APPROVED before disbursement");
+        if (!"APPROVED".equals(loan.getLoanStatus())) {
+            throw new IllegalStateException("Loan must be APPROVED before disbursement");
         }
 
         loan.setLoanStatus("DISBURSED");
@@ -82,8 +66,7 @@ public class LoanServiceImpl implements LoanService {
 
         Loan savedLoan = loanRepository.save(loan);
 
-        // kafka send event
-        // loanProducer.sendEvent(new LoanEvent("LOAN_DISBURSED", loan.getBorrowerId(), loan.getAmount()));
+        // loanProducer.sendEvent(...);
 
         return loanMapper.toResponse(savedLoan);
     }

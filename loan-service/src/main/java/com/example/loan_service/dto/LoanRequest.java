@@ -12,7 +12,7 @@ public class LoanRequest {
 
     @NotNull(message = "Amount is required")
     @DecimalMin(value = "1000000", message = "Minimum loan amount is 1,000,000")
-    private BigDecimal amount;
+    private BigDecimal loanAmount;
 
     @NotNull(message = "Interest Rate is required")
     private BigDecimal interestRate;

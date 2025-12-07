@@ -10,6 +10,7 @@ import com.example.borrower_service.service.BorrowerService;
 import com.example.product_service.entity.Product;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,10 +28,17 @@ public class BorrowerController {
     private final BorrowerService borrowerService;
     private final BorrowerProducer borrowerProducer;
 
-//    public BorrowerController(BorrowerService borrowerService, BorrowerProducer borrowerProducer) {
-//        this.borrowerService = borrowerService;
-//        this.borrowerProducer = borrowerProducer;
-//    }
+
+    @GetMapping("/cb-test")
+    public ResponseEntity<String> testCB() {
+        try {
+            Thread.sleep(5000); // 5 giây > timeout-duration 3s
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok("OK");
+    }
+
 
     @GetMapping
     public String listBorrowers(Model model) {
@@ -98,6 +106,7 @@ public class BorrowerController {
         borrowerEvent.setProductID(product);
         borrowerEvent.setQuantity(quantity);
         borrowerEvent.setMessage("borrower is sending event");
+
 
         borrowerProducer.sendMessage(borrowerEvent);
 

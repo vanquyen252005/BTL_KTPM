@@ -16,8 +16,7 @@ public class BorrowerConsumer {
             ,groupId = "${spring.kafka.consumer.group-id}"
     )
     public void consumer(BorrowerEvent event){
-        LOGGER.info(String.format("Borrower event received in product service => %s", event.toString()));
-
+        LOGGER.info(String.format("Borrower event received in product service => %s", event.toString()) +" - EVENT_RECEIVED_AT=" + System.currentTimeMillis());
         //consume?
         //
         //
