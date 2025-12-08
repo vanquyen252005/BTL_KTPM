@@ -1,8 +1,7 @@
 package com.example.loan_service.command.controller;
 
 import com.example.loan_service.command.service.LoanCommandService;
-import com.example.loan_service.dto.LoanRequest;
-import com.example.loan_service.dto.LoanResponse;
+import com.example.loan_service.dto.command.CreateLoanCommand; // Giả sử bạn đã tách DTO
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,21 +15,21 @@ public class LoanCommandController {
 
     private final LoanCommandService loanCommandService;
 
-    // Tạo hồ sơ vay
     @PostMapping
-    public ResponseEntity<LoanResponse> createLoan(@RequestBody @Valid LoanRequest request) {
-        return new ResponseEntity<>(loanCommandService.createLoan(request), HttpStatus.CREATED);
+    public ResponseEntity<Long> createLoan(@RequestBody @Valid CreateLoanCommand command) {
+        Long loanId = loanCommandService.createLoan(command);
+        return new ResponseEntity<>(loanId, HttpStatus.CREATED);
     }
 
-    // Duyệt hồ sơ (APPROVED)
     @PutMapping("/{id}/approve")
-    public ResponseEntity<LoanResponse> approveLoan(@PathVariable Long id) {
-        return ResponseEntity.ok(loanCommandService.approveLoan(id));
+    public ResponseEntity<Void> approveLoan(@PathVariable Long id) {
+        loanCommandService.approveLoan(id);
+        return ResponseEntity.ok().build();
     }
 
-    // Giải ngân (DISBURSED)
     @PutMapping("/{id}/disburse")
-    public ResponseEntity<LoanResponse> disburseLoan(@PathVariable Long id) {
-        return ResponseEntity.ok(loanCommandService.disburseLoan(id));
+    public ResponseEntity<Void> disburseLoan(@PathVariable Long id) {
+        loanCommandService.disburseLoan(id);
+        return ResponseEntity.ok().build();
     }
 }

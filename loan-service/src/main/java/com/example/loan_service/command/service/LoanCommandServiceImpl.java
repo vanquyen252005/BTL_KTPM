@@ -1,10 +1,8 @@
 package com.example.loan_service.command.service;
 
-import com.example.loan_service.dto.LoanRequest;
-import com.example.loan_service.dto.LoanResponse;
+import com.example.loan_service.dto.command.CreateLoanCommand;
 import com.example.loan_service.entity.Loan;
 import com.example.loan_service.exception.LoanNotFoundException;
-import com.example.loan_service.map.LoanMapper;
 import com.example.loan_service.repository.LoanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,55 +17,59 @@ import java.util.UUID;
 public class LoanCommandServiceImpl implements LoanCommandService {
 
     private final LoanRepository loanRepository;
-    private final LoanMapper loanMapper;
     // private final LoanProducer loanProducer;
 
     @Override
-    public LoanResponse createLoan(LoanRequest request) {
-        Loan loan = loanMapper.toEntity(request);
+    public Long createLoan(CreateLoanCommand command) {
+        // Map từ Command sang Entity
+        Loan loan = new Loan();
+        loan.setBorrowerId(command.getBorrowerId());
+        loan.setLoanAmount(command.getLoanAmount());
+        loan.setInterestRate(command.getInterestRate());
+        loan.setDurationMonths(command.getDurationMonths());
 
+        // Set các dữ liệu hệ thống tự sinh
         loan.setLoanStatus("PENDING");
         loan.setCreatedDate(LocalDateTime.now());
         loan.setLoanNumber("LN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
 
         Loan savedLoan = loanRepository.save(loan);
 
-        //publish event LOAN_CREATED nếu cần
-        return loanMapper.toResponse(savedLoan);
+        // publish event LOAN_CREATED nếu cần (chỉ bắn event, ko return data)
+
+        return savedLoan.getLoanId();
     }
 
     @Override
-    public LoanResponse approveLoan(Long id) {
+    public void approveLoan(Long id) {
         Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new LoanNotFoundException("Loan not found"));
+                .orElseThrow(() -> new LoanNotFoundException("Loan not found with id: " + id));
 
+        // Validate Logic nghiệp vụ
         if (!"PENDING".equals(loan.getLoanStatus())) {
-            throw new IllegalStateException("Loan is not in PENDING state");
+            throw new IllegalStateException("Loan is not in PENDING state. Current state: " + loan.getLoanStatus());
         }
 
         loan.setLoanStatus("APPROVED");
-        Loan saved = loanRepository.save(loan);
+        loanRepository.save(loan);
 
-        // publish event LOAN_APPROVED nếu cần
-        return loanMapper.toResponse(saved);
+        // publish event LOAN_APPROVED ở đây
     }
 
     @Override
-    public LoanResponse disburseLoan(Long id) {
+    public void disburseLoan(Long id) {
         Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new LoanNotFoundException("Loan not found"));
+                .orElseThrow(() -> new LoanNotFoundException("Loan not found with id: " + id));
 
         if (!"APPROVED".equals(loan.getLoanStatus())) {
-            throw new IllegalStateException("Loan must be APPROVED before disbursement");
+            throw new IllegalStateException("Loan must be APPROVED before disbursement. Current state: " + loan.getLoanStatus());
         }
 
         loan.setLoanStatus("DISBURSED");
         loan.setDisbursementDate(LocalDateTime.now());
 
-        Loan savedLoan = loanRepository.save(loan);
+        loanRepository.save(loan);
 
-        // loanProducer.sendEvent(...);
-
-        return loanMapper.toResponse(savedLoan);
+        // loanProducer.sendEvent(new LoanDisbursedEvent(id, loan.getBorrowerId(), loan.getAmount()));
     }
 }
